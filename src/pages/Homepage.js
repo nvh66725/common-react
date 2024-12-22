@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { https } from "../api";
 
 const Homepage = () => {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [params, setParams] = useSearchParams();
+  const page = params.get("page") ?? 1;
+  const pageSize = params.get("pageSize") ?? 5;
   const { data } = useQuery({
     queryKey: ["post", page, pageSize],
     queryFn: () =>
@@ -23,8 +24,7 @@ const Homepage = () => {
   ];
 
   const handlePaginationChange = (page, pageSize) => {
-    setPage(page);
-    setPageSize(pageSize);
+    setParams((prev) => ({ ...prev, page, pageSize }));
   };
 
   return (
