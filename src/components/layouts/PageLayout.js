@@ -6,19 +6,19 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 const items = [
   { key: "/home", label: "Homepage" },
   {
-    key: "/introduction",
-    label: "Introduction",
+    key: "/mail",
+    label: "Mail",
     children: [
-      { key: "/introduction/greeting", label: "Greeting" },
-      { key: "/introduction/president", label: "President" },
+      { key: "/mail/create", label: "Create" },
+      { key: "/mail/inbox", label: "Inbox" },
     ],
   },
   {
-    key: "/club",
-    label: "Club",
+    key: "/inventory",
+    label: "Inventory",
     children: [
-      { key: "/club/forever", label: "Forever" },
-      { key: "/club/company", label: "Company" },
+      { key: "/inventory/nft", label: "NFT" },
+      { key: "/inventory/non-nft", label: "non-NFT" },
     ],
   },
 ];
@@ -27,7 +27,6 @@ export const PageLayout = () => {
   const isFetching = useIsFetching();
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location);
 
   useEffect(() => {
     const cursor = isFetching ? "progress" : "default";

@@ -1,20 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
-import { DatePicker, Table } from "antd";
+import { Table } from "antd";
 import { useState } from "react";
+import { https } from "../api";
 
 const Homepage = () => {
   const [page, setPage] = useState(1);
-  const { data, isFetching } = useQuery({
-    queryKey: ["post", page],
+  const [pageSize, setPageSize] = useState(10);
+  const { data } = useQuery({
+    queryKey: ["post", page, pageSize],
     queryFn: () =>
-      fetch(
-        `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=10`
-      )
-        .then((res) => res.json())
-        .then((data) => data),
+      https.get("/posts", { params: { _page: page, _limit: pageSize } }),
+    select: (data) => ({
+      elements: data.data,
+      total: data.headers["x-total-count"],
+    }),
   });
-
-  console.log(data);
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
@@ -22,14 +22,25 @@ const Homepage = () => {
     { title: "Content", dataIndex: "body", key: "body" },
   ];
 
+  const handlePaginationChange = (page, pageSize) => {
+    setPage(page);
+    setPageSize(pageSize);
+  };
+
   return (
     <>
-      <DatePicker />
       <Table
         rowKey="id"
         columns={columns}
-        dataSource={data}
-        pagination={{ total: 100, defaultCurrent: page, onChange: setPage }}
+        dataSource={data?.elements}
+        pagination={{
+          total: data?.total,
+          current: page,
+          pageSize,
+          position: ["topCenter"],
+          pageSizeOptions: [5, 10, 20],
+          onChange: handlePaginationChange,
+        }}
       />
     </>
   );
