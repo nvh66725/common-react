@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { https } from "../api";
 
 const Homepage = () => {
@@ -17,12 +17,6 @@ const Homepage = () => {
     }),
   });
 
-  const columns = [
-    { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Title", dataIndex: "title", key: "title" },
-    { title: "Content", dataIndex: "body", key: "body" },
-  ];
-
   const handlePaginationChange = (page, pageSize) => {
     setParams((prev) => ({ ...prev, page, pageSize }));
   };
@@ -31,7 +25,18 @@ const Homepage = () => {
     <>
       <Table
         rowKey="id"
-        columns={columns}
+        columns={[
+          { title: "ID", dataIndex: "id", key: "id" },
+          {
+            title: "Title",
+            dataIndex: "title",
+            key: "title",
+            render: (value, record) => {
+              return <Link to={`${record.id}`}>{value}</Link>;
+            },
+          },
+          { title: "Content", dataIndex: "body", key: "body" },
+        ]}
         dataSource={data?.elements}
         pagination={{
           total: data?.total,
