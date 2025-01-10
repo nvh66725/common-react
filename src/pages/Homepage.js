@@ -1,11 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { Button, Table } from "antd";
-import { DateTime } from "luxon";
+import { Button, Select, Table } from "antd";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { https } from "../api";
 
+const languages = [
+  { value: "vi", label: "Việt Nam" },
+  { value: "en", label: "English" },
+];
+
 const Homepage = () => {
+  const { t, i18n } = useTranslation();
   const [params, setParams] = useSearchParams();
   const page = params.get("page") ?? 1;
   const pageSize = params.get("pageSize") ?? 5;
@@ -30,16 +36,6 @@ const Homepage = () => {
     Promise.all([true && fetch("")])
       .then(() => null)
       .catch((error) => error);
-  };
-
-  const handleSubmit = () => {
-    const addedPromise = Promise.resolve("Hung");
-    addedPromise.then((res) => console.log(res));
-    try {
-      const date = DateTime.fromFormat(null, "mm");
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const [currentValue, setCurrentValue] = useState(2017);
@@ -69,10 +65,14 @@ const Homepage = () => {
     return years.slice(startIndex, startIndex + visiblePages);
   }, [years, currentIndex]);
 
-  console.log(currentValue);
-
   return (
     <>
+      <div>{t("hello")}</div>
+      <Select
+        options={languages}
+        value={i18n.language}
+        onChange={(value) => i18n.changeLanguage(value)}
+      />
       <div className="flex gap-2">
         <Button
           disabled={currentIndex <= 5}
@@ -100,7 +100,6 @@ const Homepage = () => {
           Next
         </Button>
       </div>
-      <Button onClick={handleSubmit}>Submit</Button>
       <Table
         rowKey="id"
         columns={columns}
